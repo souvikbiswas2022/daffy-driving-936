@@ -1,8 +1,12 @@
 package com.masai.bean;
 
+import java.sql.Date;
+
+import javax.xml.crypto.Data;
+
 public class Item {
 
-	private int  salerId;
+	private int  sallerId;
 	private int itemId;
 	private String itemName;
 	private String  category;
@@ -11,10 +15,10 @@ public class Item {
 	
 	
 	private String Itemstatus;
-	private String soldDate;
+	private Date soldDate;
 	private double soldPrice;
-	private String startDate;
-	private String endDate;
+	private Date startDate;
+	private Date endDate;
 	private String auctionStatus;
 	private int buyerId;
 	
@@ -24,9 +28,9 @@ public class Item {
 	}
 
 
-	public Item(int salerId, String itemName, String category, double basePrice, int quantity) {
+	public Item(int sallerId, String itemName, String category, double basePrice, int quantity) {
 		super();
-		this.salerId = salerId;
+		this.sallerId = sallerId;
 		this.itemName = itemName;
 		this.category = category;
 		this.basePrice = basePrice;
@@ -34,13 +38,38 @@ public class Item {
 	}
 
 
+	public Item(int sallerId, int itemId, String itemName, String category, double basePrice, int quantity,
+			String itemstatus, Date soldDate, double soldPrice, Date startDate, Date endDate,
+			String auctionStatus, int buyerId) {
+		super();
+		this.sallerId = sallerId;
+		this.itemId = itemId;
+		this.itemName = itemName;
+		this.category = category;
+		this.basePrice = basePrice;
+		this.quantity = quantity;
+		Itemstatus = itemstatus;
+		this.soldDate = soldDate;
+		this.soldPrice = soldPrice;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.auctionStatus = auctionStatus;
+		this.buyerId = buyerId;
+	}
+
+
+
+
+
+
+
 	public int getSalerId() {
-		return salerId;
+		return sallerId;
 	}
 
 
 	public void setSalerId(int salerId) {
-		this.salerId = salerId;
+		this.sallerId = salerId;
 	}
 
 
@@ -104,12 +133,12 @@ public class Item {
 	}
 
 
-	public String getSoldDate() {
+	public Date getSoldDate() {
 		return soldDate;
 	}
 
 
-	public void setSoldDate(String soldDate) {
+	public void setSoldDate(Date soldDate) {
 		this.soldDate = soldDate;
 	}
 
@@ -124,22 +153,22 @@ public class Item {
 	}
 
 
-	public String getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
 
-	public void setStartDate(String startDate) {
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
 
-	public String getEndDate() {
+	public Date getEndDate() {
 		return endDate;
 	}
 
 
-	public void setEndDate(String endDate) {
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
@@ -166,7 +195,7 @@ public class Item {
 
 	@Override
 	public String toString() {
-		return "Item [salerId=" + salerId + ", itemId=" + itemId + ", itemName=" + itemName + ", category=" + category
+		return "Item [sallerId=" + sallerId + ", itemId=" + itemId + ", itemName=" + itemName + ", category=" + category
 				+ ", basePrice=" + basePrice + ", quantity=" + quantity + ", Itemstatus=" + Itemstatus + ", soldDate="
 				+ soldDate + ", soldPrice=" + soldPrice + ", startDate=" + startDate + ", endDate=" + endDate
 				+ ", auctionStatus=" + auctionStatus + ", buyerId=" + buyerId + "]";
