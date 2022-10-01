@@ -9,7 +9,7 @@ import com.masai.dao.SellerDaoImpl;
 
 public class ViewSoldItemsUseCase {
 
-	public static void main(String[] args) {
+	public static void viewSoldItems() {
 	
     Scanner sc = new Scanner(System.in);
 

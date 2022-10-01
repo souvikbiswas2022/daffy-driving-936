@@ -9,7 +9,7 @@ import com.masai.dao.SellerDaoImpl;
 
 public class RemoveItemUseCase {
 
-	public static void main(String[] args) {
+	public static void removeItemUseCase() {
 
         Scanner sc = new Scanner(System.in);
 		

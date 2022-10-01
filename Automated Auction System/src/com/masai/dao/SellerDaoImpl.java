@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.crypto.Data;
+
+import com.masai.bean.Buyer;
 import com.masai.bean.Item;
 import com.masai.bean.Seller;
 import com.masai.utility.DBUtil;
@@ -220,6 +222,44 @@ if(update>0) {
 		}
 
 		return soldItems;
+	}
+
+	@Override
+	public Seller loginSeller(String email, String password) {
+		
+		Seller seller = null;
+		
+		try(Connection connection = DBUtil.provideConnection()){
+			
+			PreparedStatement ps = connection.prepareStatement("select * from sellers where semail =? and spassword = ?;");
+			
+			ps.setString(1, email);
+			ps.setString(2, password);
+			
+			
+		ResultSet rs = ps.executeQuery();
+		
+		if(rs.next()) {
+			int id = rs.getInt("sid");
+			String nm = rs.getString("sname");
+			String eml = rs.getString("semail");
+			String pan = rs.getString("span");
+			String pass = rs.getString("spassword");
+			
+			seller = new Seller(id,nm,eml,pan,pass);
+		}
+		else {
+			
+			System.out.println(" -> through exception");
+		}
+			
+		}catch(SQLException e) {
+			
+			e.printStackTrace();
+		}
+
+		return seller;
+		
 	}
 	
 	}
