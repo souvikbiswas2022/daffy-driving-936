@@ -8,7 +8,10 @@ import com.masai.dao.SellerDaoImpl;
 
 public class ResisterSellerUseCase {
 
-	public static void main(String[] args) {
+	public static boolean resisterSellerUseCase() {
+		
+		boolean status = false;
+		
 		Scanner sc=new Scanner(System.in);
 		
 		System.out.println("< < Enter your name > >");
@@ -30,8 +33,11 @@ public class ResisterSellerUseCase {
 		String message=sd.resisterSeller(s);
 		
 		System.out.println(message);
+		status = true;
 		
-
+		
+		
+       return status;
 	}
 
 }

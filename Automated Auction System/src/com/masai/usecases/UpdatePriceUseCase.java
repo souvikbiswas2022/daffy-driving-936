@@ -5,24 +5,23 @@ import java.util.Scanner;
 import com.masai.dao.SellerDao;
 import com.masai.dao.SellerDaoImpl;
 
-public class UpdateQuantityUseCase {
+public class UpdatePriceUseCase {
 
-	public static void updateQuantityUseCase() {
-	
-		
+	public static void updatePriceUseCase() {
 		Scanner sc=new Scanner(System.in);
 		System.out.println("< < Enter the Item Id  > >");
 		int itemId=sc.nextInt();
 		
-		System.out.println("< < Enter the new Quantity  > >");
-		int newQuantity=sc.nextInt();
+		System.out.println("< < Enter the new Base price  > >");
+		double newBasePrice=sc.nextDouble();
 		
 		
 		SellerDao sd=new SellerDaoImpl();
 		
-		String message=sd.updateQuantity(itemId, newQuantity);
+		String message=sd.updatePrice(itemId, newBasePrice);
 		
 		System.out.println(message);
+		
 
 	}
 

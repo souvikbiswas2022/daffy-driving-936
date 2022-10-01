@@ -2,6 +2,7 @@ package com.masai.dao;
 
 import java.util.List;
 
+import com.masai.bean.Buyer;
 import com.masai.bean.Item;
 import com.masai.bean.Seller;
 
@@ -15,4 +16,6 @@ public interface SellerDao {
 	    public String AddNewItem(int sellerId,Item item);
 	  public String removeItem(int itemid);
 	   public List<Item> getSoldItems(int sellerid);
+	   
+	   public Seller loginSeller(String email, String password);
 }
