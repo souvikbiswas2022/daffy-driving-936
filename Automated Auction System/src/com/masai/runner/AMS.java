@@ -2,7 +2,10 @@ package com.masai.runner;
 
 import java.util.Scanner;
 
+import com.masai.dao.AdminDao;
+import com.masai.dao.AdminDaoImpl;
 import com.masai.usecases.AddNewItemUseCase;
+import com.masai.usecases.BuyerBiddingUseCase;
 import com.masai.usecases.ItemsCategoryWaiseUseCase;
 import com.masai.usecases.LoginAdminUserCase;
 import com.masai.usecases.LoginBuyerUserCase;
@@ -20,14 +23,19 @@ import com.masai.usecases.ViewSoldItemsUseCase;
 
 public class AMS {
 
-	public static void main(String[] args) {
-
+	public static void start() {
+       
+		
+		AdminDao ad = new AdminDaoImpl();
+		ad.algoBid();
+		
+		
 		Scanner sc =new Scanner(System.in);
 	      System.out.println();
 		
-		System.out.println("===============================================");
-		System.out.println("   LOGIN/ SIGNUP ");
-		System.out.println("===============================================");
+		System.out.println("===============================================|");
+		System.out.println("   @ LOGIN/ SIGNUP ");
+		System.out.println("===============================================|");
         System.out.println();
         System.out.println("Please select your option to continue : ");
 		System.out.println("  1. Administrator\n  2. Seller \n  3. Buyer ");
@@ -69,7 +77,12 @@ public class AMS {
 		              }
 
 		break;
-		case 2 : System.out.println("1. login \n2. signup");
+		case 2 : 
+			System.out.println("===============================================");
+	         System.out.println(" @ SELLER");
+	         System.out.println("===============================================");
+	     	System.out.println();
+	          System.out.println("1. Login \n2. Signup");
 	    System.out.println("< < Select your option > >");
  		 int option2 = sc.nextInt();
          switch(option2) {
@@ -95,7 +108,12 @@ public class AMS {
 
 		break;
 		
-		case 3 : System.out.println("1. login \n2. signup");
+		case 3 : 
+			System.out.println("===============================================");
+	        System.out.println(" @ BUYER");
+	        System.out.println("===============================================");
+	     	System.out.println();
+	        System.out.println("1. Login \n2. Signup");
         System.out.println("< < Select your option > >");
 		 int option3 = sc.nextInt();
         switch(option3) {
@@ -164,7 +182,7 @@ break;
 		break;
 		
 	case 7 : 
-		AMS.main(null);
+		AMS.start();
 		
 		break;
 		
@@ -191,7 +209,7 @@ break;
 			break;
 			
 		case 2 : 
-			AMS.main(null);
+			AMS.start();
 			
 			break;
 			
@@ -257,7 +275,7 @@ break;
 	
 		break;
 	case 7 : 
-		AMS.main(null);
+		AMS.start();
 		
 		break;
 		
@@ -284,7 +302,7 @@ break;
 			break;
 			
 		case 2 : 
-			AMS.main(null);
+			AMS.start();
 			
 			break;
 			
@@ -322,13 +340,14 @@ break;
 		
 	case 3 : 
 		
-		System.out.println("// Pending");
+		BuyerBiddingUseCase bdc = new BuyerBiddingUseCase();
+		bdc.buyerBiddingUseCase();
 		AMS.navigationOptionForBuyer() ;
 		
 		break;
 
 	case 4 : 
-		AMS.main(null);
+		AMS.start();
 		
 		break;
 		
@@ -354,7 +373,7 @@ break;
 			break;
 			
 		case 2 : 
-			AMS.main(null);
+			AMS.start();
 			
 			break;
 			

@@ -6,6 +6,7 @@ import java.util.Scanner;
 import com.masai.bean.Item;
 import com.masai.dao.SellerDao;
 import com.masai.dao.SellerDaoImpl;
+import com.masai.exceptions.ItemException;
 
 public class ViewSoldItemsUseCase {
 
@@ -20,15 +21,20 @@ public class ViewSoldItemsUseCase {
 	
 	SellerDao sd = new SellerDaoImpl();
 	
-	List<Item> soldItems = sd.getSoldItems(sellerId);
+	List<Item> soldItems;
+	try {
+		soldItems = sd.getSoldItems(sellerId);
+		for(int i=0;i<soldItems.size();i++) {
+			System.out.println("Item : "+(i+1));
+			 System.out.println("Item Name : "+soldItems.get(i).getItemName());
+			 System.out.println("Item Base price : "+soldItems.get(i).getBasePrice());
+				
+			}
+	} catch (ItemException e) {
 	
-	for(int i=0;i<soldItems.size();i++) {
-	System.out.println("Item : "+(i+1));
-	 System.out.println("Item Name : "+soldItems.get(i).getItemName());
-	 System.out.println("Item Base price : "+soldItems.get(i).getBasePrice());
-		
+	System.out.println(e.getMessage());
 	}
-		//if no sold item found then what will show?
+	
 
 	}
 

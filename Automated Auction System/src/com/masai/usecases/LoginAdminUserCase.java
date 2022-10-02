@@ -5,6 +5,7 @@ import java.util.Scanner;
 import com.masai.bean.Admin;
 import com.masai.dao.AdminDao;
 import com.masai.dao.AdminDaoImpl;
+import com.masai.exceptions.AdminException;
 
 public class LoginAdminUserCase {
 
@@ -21,10 +22,19 @@ public class LoginAdminUserCase {
    String password = sc.next();
    
    
-   Admin admin = ad.loginAdmin(email, password);
-   status = true;
-   System.out.println("Welcome "+admin.getName());
-   status = true;
+   Admin admin;
+try {
+	admin = ad.loginAdmin(email, password);
+	
+	   status = true;
+	   System.out.println("Welcome "+admin.getName());
+	
+	
+} catch (AdminException e) {
+
+System.out.println(e.getMessage());
+}
+
    return status;
    
 	}
