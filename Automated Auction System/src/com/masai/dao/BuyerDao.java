@@ -28,5 +28,7 @@ public ArrayList<Item> runningAuctionItemList() throws ItemException;
 
 
 String bidding(int buyerId, double bidPrice,int itemId);
+
+public String fileDispute(int itemId,String dispute);
 	
 }

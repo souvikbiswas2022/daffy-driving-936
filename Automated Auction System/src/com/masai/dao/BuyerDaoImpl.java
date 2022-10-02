@@ -281,6 +281,37 @@ public class BuyerDaoImpl implements BuyerDao {
 		return runningAuctionItems;
 	}
 
+	@Override
+	public String fileDispute(int itemId, String dispute) {
+
+   String message = "Failed to submit ...";
+		try(Connection connection = DBUtil.provideConnection()){
+			
+			
+			PreparedStatement ps = connection.prepareStatement("insert into dispute values(?,?,'PENDING')");
+			
+			ps.setInt(1, itemId);
+			ps.setString(2, dispute);
+		    
+	    	int check = ps.executeUpdate();
+			
+			if(check > 0) {
+				message = "Dispute filed.... ";
+			}
+			
+			
+			
+			
+		}catch(SQLException e) {
+
+			e.printStackTrace();
+			
+			
+		}
+
+		return message;
+	}
+
 
 
 }

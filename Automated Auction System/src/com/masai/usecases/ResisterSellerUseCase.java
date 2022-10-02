@@ -5,12 +5,13 @@ import java.util.Scanner;
 import com.masai.bean.Seller;
 import com.masai.dao.SellerDao;
 import com.masai.dao.SellerDaoImpl;
+import com.masai.exceptions.SellerException;
 
 public class ResisterSellerUseCase {
 
 	public static boolean resisterSellerUseCase() {
 		
-		boolean status = false;
+		boolean status = true;
 		
 		Scanner sc=new Scanner(System.in);
 		
@@ -30,13 +31,23 @@ public class ResisterSellerUseCase {
 		
 		SellerDao sd=new SellerDaoImpl();
 		
-		String message=sd.resisterSeller(s);
-		
-		System.out.println(message);
-		status = true;
+		String message;
 		
 		
+		try {
+			
+			message = sd.resisterSeller(s);
+			System.out.println(message);
+			
+		} catch (SellerException e) {
 		
+		System.out.println(e.getMessage());
+		status = false;
+		
+		}
+		
+		
+
        return status;
 	}
 

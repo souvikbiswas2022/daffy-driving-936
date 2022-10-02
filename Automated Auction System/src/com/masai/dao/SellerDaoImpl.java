@@ -14,14 +14,17 @@ import javax.xml.crypto.Data;
 import com.masai.bean.Buyer;
 import com.masai.bean.Item;
 import com.masai.bean.Seller;
+import com.masai.exceptions.AdminException;
 import com.masai.exceptions.ItemException;
 import com.masai.exceptions.SellerException;
 import com.masai.utility.DBUtil;
 
 public class SellerDaoImpl implements SellerDao {
 
+	
+	
 	@Override
-	public String resisterSeller(Seller s) {
+	public String resisterSeller(Seller s) throws SellerException {
 		
 		String message="Resistration failed";
 		
@@ -42,12 +45,17 @@ public class SellerDaoImpl implements SellerDao {
 			}
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			
+			throw new SellerException("Sorry duplicate email '"+s.getEmail()+"'");
+			
 		}
 
 		return message;
 	}
 
+	
+	
+	
 	@Override
 	public String resisterItems(List<Item> i) {
 	
@@ -60,7 +68,7 @@ public class SellerDaoImpl implements SellerDao {
 	
 	
 	java.sql.Timestamp sqlTime=new java.sql.Timestamp(date.getTime());
-	sqlTime.setSeconds(sqlTime.getSeconds()+40);
+	sqlTime.setSeconds(sqlTime.getSeconds()+360);
 
 	
 	
@@ -70,19 +78,17 @@ public class SellerDaoImpl implements SellerDao {
 				
 				PreparedStatement ps=connection.prepareStatement("insert into items(sid,itemname,itemcategory,baseprice,qn,startdate,endtime) values(?,?,?,?,?,now(),addtime(now(),'59'));");
 				
-//				PreparedStatement ps=connection.prepareStatement("insert into items(sid,itemname,itemcategory,baseprice,qn,startdate,endtime) values(?,?,?,?,?,now(),concat(curdate(),' 00.00.40'));");
 				ps.setInt(1, item.getSalerId());
 				ps.setString(2,item.getItemName());
 				ps.setString(3, item.getCategory());
 				ps.setDouble(4, item.getBasePrice());
 				ps.setInt(5, item.getQuantity());
-//				ps.setDate(6,sqlDate);
-//				ps.setTimestamp(6,sqlTime);
 				int check =ps.executeUpdate();
 				
 				if(check>0) {
-					message="Items added successfull ...";
+					message="Items added successfully ...";
 				}
+				
 			}
 
 		}catch(SQLException e) {
@@ -93,6 +99,10 @@ public class SellerDaoImpl implements SellerDao {
 
 	}
 
+	
+	
+	
+	
 	@Override
 	public String updatePrice(int itemid, Double newPrice) {
 		String message="Failed to update price . . .";
@@ -117,6 +127,10 @@ public class SellerDaoImpl implements SellerDao {
 		return message;
 	}
 
+	
+	
+	
+	
 	@Override
 	public String updateQuantity(int itemid, int newQuantity) {
 	
@@ -148,6 +162,10 @@ public class SellerDaoImpl implements SellerDao {
 		return message;
 	}
 
+	
+	
+	
+	
 	@Override
 	public String AddNewItem(int sellerId, Item item) {
 		return null;
@@ -155,6 +173,10 @@ public class SellerDaoImpl implements SellerDao {
 
 	}
 
+	
+	
+	
+	
 	@Override
 	public String removeItem(int itemid) {
 
@@ -183,6 +205,7 @@ if(update>0) {
 	}
 
 
+	
 	
 	@Override
 	public List<Item> getSoldItems(int sellerid) throws ItemException{
@@ -235,6 +258,10 @@ if(soldItems.size() == 0) {
 		return soldItems;
 	}
 
+	
+	
+	
+	
 	@Override
 	public Seller loginSeller(String email, String password)  throws SellerException{
 		
@@ -271,6 +298,57 @@ if(soldItems.size() == 0) {
 		}
 
 		return seller;
+		
+	}
+
+
+
+
+	@Override
+	public ArrayList<Item> sellerOwnItems(int sellerId) throws ItemException{
+
+		ArrayList<Item> ownItems = new ArrayList<>();
+		
+		
+		try (Connection connection = DBUtil.provideConnection()) {
+
+			PreparedStatement ps = connection.prepareStatement("select * from items where sid=?;");
+			ps.setInt(1, sellerId);
+			ResultSet rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				int salerid = rs.getInt("sid");
+				int itemId = rs.getInt("itemid");
+				String itemName = rs.getString("itemname");
+				String category = rs.getString("itemcategory");
+				double basePrice = rs.getDouble("baseprice");
+				int quantity = rs.getInt("qn");
+				String itemStatus = rs.getString("itemstatus");
+				Date soldDate = rs.getDate("solddate");
+				double soldPrice = rs.getDouble("soldprice");
+				Date startDate = rs.getDate("startdate");
+				Time endTime = rs.getTime("endtime");
+				String auctionStatus = rs.getString("aucStatus");
+				int buyerId = rs.getInt("bid");
+
+				ownItems.add(new Item(salerid, itemId, itemName, category, basePrice, quantity, itemStatus, soldDate,
+				soldPrice, startDate, endTime, auctionStatus, buyerId));
+
+			}
+
+		} catch (SQLException e) {
+			throw new ItemException(e.getMessage());
+		}
+
+		
+		if (ownItems.size() == 0) {
+			throw new ItemException("No item found ...");
+		}
+
+
+		
+		return ownItems;
 		
 	}
 	

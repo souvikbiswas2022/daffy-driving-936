@@ -12,10 +12,11 @@ import com.masai.exceptions.SellerException;
 
 public class LoginSellerUserCase {
 
+	static Seller logedIn = null;
 	
 		public static boolean loginSellerUserCase() {
       
-			boolean status  = false;
+	 boolean status  = false;
 	   Scanner sc = new Scanner(System.in);
 	   
 	   SellerDao sd = new SellerDaoImpl();
@@ -26,12 +27,14 @@ public class LoginSellerUserCase {
 	   System.out.println("< < Enter your password > >");
 	   String password = sc.next();
 	   
-	   
+	
 	   Seller seller;
 	try {
 		seller = sd.loginSeller(email, password);
-		   System.out.println("Welcome "+seller.getName());
+		   System.out.println("Welcome "+seller.getName() +", Your id :"+seller.getId());
+		   logedIn=seller;
 		   status  = true;
+		   
 	} catch (SellerException e) {
 
 	System.out.println(e.getMessage());
