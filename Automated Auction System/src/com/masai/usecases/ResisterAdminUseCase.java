@@ -8,12 +8,15 @@ import com.masai.dao.AdminDao;
 import com.masai.dao.AdminDaoImpl;
 import com.masai.dao.BuyerDao;
 import com.masai.dao.BuyerDaoImpl;
+import com.masai.exceptions.AdminException;
 
 public class ResisterAdminUseCase {
 
 	public static boolean resisterAdminUseCase() {
     
-		boolean status = false;
+		boolean status = true;
+		String message = null;
+		
 		
 	Scanner sc = new Scanner(System.in);
 		
@@ -29,11 +32,22 @@ public class ResisterAdminUseCase {
 		
 		AdminDao bd = new AdminDaoImpl();
 		
-	
-		String message = bd.resisterAdmin(new Admin(name,email,password));
+
+		
+		try {
+			
+			message = bd.resisterAdmin(new Admin(name,email,password));
+			
+		} catch (AdminException e) {
+			
+		    status = false;
+		    
+		System.out.println(e.getMessage());
+		
+		}
 
 		System.out.println(message);
-      status = true;
+    
       
       return status;
 		

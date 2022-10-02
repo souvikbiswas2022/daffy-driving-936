@@ -12,10 +12,9 @@ public class AddNewItemUseCase {
 	public static void addNewItemUseCase() {
 	
 		
-Scanner sc = new Scanner(System.in);
+       Scanner sc = new Scanner(System.in);
 		
-		System.out.println("< < Enter your id > >");
-		int sellerId = sc.nextInt();
+		
 		
 		System.out.println("< <  How many items you want to add > >");
 		int noOfItems = sc.nextInt();
@@ -31,14 +30,14 @@ Scanner sc = new Scanner(System.in);
 			System.out.println("< <  Enter Item Category > >");
 			String itemCategory = sc.nextLine();
 			
-			System.out.println("< < Enter Base Price  > >");
-			double  basePrice = sc.nextDouble();
-			
 			System.out.println("< <  Enter Quantity    > >");
 			int  quantity = sc.nextInt();
 			
+			System.out.println("< < Enter Base Price  > >");
+			double  basePrice = sc.nextDouble();
 			
-			items.add(new Item(sellerId,itemName,itemCategory,basePrice,quantity));
+
+			items.add(new Item(LoginSellerUserCase.logedIn.getId(),itemName,itemCategory,basePrice,quantity));
 			
 		}
 		

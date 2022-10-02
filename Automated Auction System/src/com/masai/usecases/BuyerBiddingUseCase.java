@@ -40,16 +40,13 @@ public class BuyerBiddingUseCase {
 		System.out.println("< < Enter your price  > >");
 		double bidPrice = sc.nextDouble();
 		
-		System.out.println("< < Enter Buyer id > >");
-		int bid = sc.nextInt();
-		
-		
-		String message = bd.bidding(bid, bidPrice, itemId);
+
+		String message = bd.bidding(LoginBuyerUserCase.logedIn.getBuyerId(), bidPrice, itemId);
 		
 		System.out.println(message);
 		
 	} catch (ItemException e) {
-//	e.printStackTrace();
+
 		System.out.println(e.getMessage());
 	
 	}

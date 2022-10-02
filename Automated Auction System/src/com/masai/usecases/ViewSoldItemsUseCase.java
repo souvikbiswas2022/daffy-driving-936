@@ -12,18 +12,13 @@ public class ViewSoldItemsUseCase {
 
 	public static void viewSoldItems() {
 	
-    Scanner sc = new Scanner(System.in);
 
-    System.out.println("< < Enter Seller Id > >");
-
-	
-	int sellerId = sc.nextInt();
 	
 	SellerDao sd = new SellerDaoImpl();
 	
 	List<Item> soldItems;
 	try {
-		soldItems = sd.getSoldItems(sellerId);
+		soldItems = sd.getSoldItems(LoginSellerUserCase.logedIn.getId());
 		for(int i=0;i<soldItems.size();i++) {
 			System.out.println("Item : "+(i+1));
 			 System.out.println("Item Name : "+soldItems.get(i).getItemName());
