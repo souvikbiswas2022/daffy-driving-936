@@ -1,6 +1,7 @@
 package com.masai.bean;
 
 import java.sql.Date;
+import java.sql.Time;
 
 import javax.xml.crypto.Data;
 
@@ -18,7 +19,7 @@ public class Item {
 	private Date soldDate;
 	private double soldPrice;
 	private Date startDate;
-	private Date endDate;
+	private Time endTime;
 	private String auctionStatus;
 	private int buyerId;
 	
@@ -39,7 +40,7 @@ public class Item {
 
 
 	public Item(int sallerId, int itemId, String itemName, String category, double basePrice, int quantity,
-			String itemstatus, Date soldDate, double soldPrice, Date startDate, Date endDate,
+			String itemstatus, Date soldDate, double soldPrice, Date startDate, Time endTime,
 			String auctionStatus, int buyerId) {
 		super();
 		this.sallerId = sallerId;
@@ -48,11 +49,11 @@ public class Item {
 		this.category = category;
 		this.basePrice = basePrice;
 		this.quantity = quantity;
-		Itemstatus = itemstatus;
+		this.Itemstatus = itemstatus;
 		this.soldDate = soldDate;
 		this.soldPrice = soldPrice;
 		this.startDate = startDate;
-		this.endDate = endDate;
+		this.endTime = endTime;
 		this.auctionStatus = auctionStatus;
 		this.buyerId = buyerId;
 	}
@@ -163,13 +164,13 @@ public class Item {
 	}
 
 
-	public Date getEndDate() {
-		return endDate;
+	public Time getEndTime() {
+		return endTime;
 	}
 
 
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
+	public void setEndTime(Time endTime) {
+		this.endTime = endTime;
 	}
 
 
@@ -197,7 +198,7 @@ public class Item {
 	public String toString() {
 		return "Item [sallerId=" + sallerId + ", itemId=" + itemId + ", itemName=" + itemName + ", category=" + category
 				+ ", basePrice=" + basePrice + ", quantity=" + quantity + ", Itemstatus=" + Itemstatus + ", soldDate="
-				+ soldDate + ", soldPrice=" + soldPrice + ", startDate=" + startDate + ", endDate=" + endDate
+				+ soldDate + ", soldPrice=" + soldPrice + ", startDate=" + startDate + ", endTime=" + endTime
 				+ ", auctionStatus=" + auctionStatus + ", buyerId=" + buyerId + "]";
 	}
 	

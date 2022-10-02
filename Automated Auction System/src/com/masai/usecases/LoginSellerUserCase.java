@@ -8,6 +8,7 @@ import com.masai.dao.AdminDao;
 import com.masai.dao.AdminDaoImpl;
 import com.masai.dao.SellerDao;
 import com.masai.dao.SellerDaoImpl;
+import com.masai.exceptions.SellerException;
 
 public class LoginSellerUserCase {
 
@@ -26,10 +27,17 @@ public class LoginSellerUserCase {
 	   String password = sc.next();
 	   
 	   
-	   Seller seller = sd.loginSeller(email, password);
+	   Seller seller;
+	try {
+		seller = sd.loginSeller(email, password);
+		   System.out.println("Welcome "+seller.getName());
+		   status  = true;
+	} catch (SellerException e) {
+
+	System.out.println(e.getMessage());
+	}
 	   
-	   System.out.println("Welcome "+seller.getName());
-	   status  = true;
+	
     
 	   return status;
 	}

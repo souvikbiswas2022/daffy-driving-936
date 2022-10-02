@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.xml.crypto.Data;
@@ -12,6 +14,8 @@ import javax.xml.crypto.Data;
 import com.masai.bean.Buyer;
 import com.masai.bean.Item;
 import com.masai.bean.Seller;
+import com.masai.exceptions.ItemException;
+import com.masai.exceptions.SellerException;
 import com.masai.utility.DBUtil;
 
 public class SellerDaoImpl implements SellerDao {
@@ -47,42 +51,45 @@ public class SellerDaoImpl implements SellerDao {
 	@Override
 	public String resisterItems(List<Item> i) {
 	
-		
 	String message="Failed to add items ...";
 		
-		
+	
+
+	java.util.Date date=new java.util.Date();
+	java.sql.Date sqlDate=new java.sql.Date(date.getTime());
+	
+	
+	java.sql.Timestamp sqlTime=new java.sql.Timestamp(date.getTime());
+	sqlTime.setSeconds(sqlTime.getSeconds()+40);
+
+	
+	
 		try(	Connection connection=DBUtil.provideConnection()){
-			
-			
-			
+	
 			for(Item item:i) {
 				
-				PreparedStatement ps=connection.prepareStatement("insert into items(sid,itemname,itemcategory,baseprice,qn) values(?,?,?,?,?);");
+				PreparedStatement ps=connection.prepareStatement("insert into items(sid,itemname,itemcategory,baseprice,qn,startdate,endtime) values(?,?,?,?,?,now(),addtime(now(),'59'));");
 				
+//				PreparedStatement ps=connection.prepareStatement("insert into items(sid,itemname,itemcategory,baseprice,qn,startdate,endtime) values(?,?,?,?,?,now(),concat(curdate(),' 00.00.40'));");
 				ps.setInt(1, item.getSalerId());
 				ps.setString(2,item.getItemName());
 				ps.setString(3, item.getCategory());
 				ps.setDouble(4, item.getBasePrice());
 				ps.setInt(5, item.getQuantity());
-				
-				
+//				ps.setDate(6,sqlDate);
+//				ps.setTimestamp(6,sqlTime);
 				int check =ps.executeUpdate();
 				
 				if(check>0) {
 					message="Items added successfull ...";
 				}
 			}
-			
-			
-		
-			
+
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-	
 
 		return message;
-		
 
 	}
 
@@ -178,7 +185,7 @@ if(update>0) {
 
 	
 	@Override
-	public List<Item> getSoldItems(int sellerid) {
+	public List<Item> getSoldItems(int sellerid) throws ItemException{
 	
 		ArrayList<Item> soldItems=new ArrayList<>();
 		
@@ -207,25 +214,29 @@ if(update>0) {
 		    Date soldDate = rs.getDate("solddate");
 		    double soldPrice = rs.getDouble("soldprice");
 		   Date startDate = rs.getDate("startdate");
-		   Date endDate = rs.getDate("enddate");
+		   Time  endTime = rs.getTime("endtime");
 		   String auctionStatus = rs.getString("aucStatus");
 		   int buyerId = rs.getInt("bid");
 				
 	
-		   soldItems.add(new Item(salerid,itemId,itemName,category,basePrice,quantity,itemStatus,soldDate,soldPrice,startDate,endDate,auctionStatus,buyerId));	
+		   soldItems.add(new Item(salerid,itemId,itemName,category,basePrice,quantity,itemStatus,soldDate,soldPrice,startDate,endTime,auctionStatus,buyerId));	
 				
 			}
 
 		}catch(SQLException e) {
-			e.printStackTrace();
+			throw new ItemException(e.getMessage());
 		
 		}
 
+if(soldItems.size() == 0) {
+	throw new ItemException("No item found . . .");
+}
+		
 		return soldItems;
 	}
 
 	@Override
-	public Seller loginSeller(String email, String password) {
+	public Seller loginSeller(String email, String password)  throws SellerException{
 		
 		Seller seller = null;
 		
@@ -250,12 +261,13 @@ if(update>0) {
 		}
 		else {
 			
-			System.out.println(" -> through exception");
+			throw new SellerException("invalid email or password ...");
+		
 		}
 			
 		}catch(SQLException e) {
 			
-			e.printStackTrace();
+			throw new SellerException(e.getMessage());
 		}
 
 		return seller;

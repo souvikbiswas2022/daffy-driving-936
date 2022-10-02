@@ -47,12 +47,6 @@ Scanner sc = new Scanner(System.in);
        String message= sd.resisterItems(items);
         
         System.out.println(message);
-		
-		
-		
-		
-		
-		
 
 	}
 

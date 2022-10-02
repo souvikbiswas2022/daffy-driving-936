@@ -8,6 +8,7 @@ import com.masai.dao.AdminDao;
 import com.masai.dao.AdminDaoImpl;
 import com.masai.dao.BuyerDao;
 import com.masai.dao.BuyerDaoImpl;
+import com.masai.exceptions.BuyerException;
 
 public class LoginBuyerUserCase {
 
@@ -25,12 +26,17 @@ public class LoginBuyerUserCase {
 			   String password = sc.next();
 			   
 			   
-			   Buyer buyer = bd.loginBuyer(email, password);
-			   
-			   System.out.println("Welcome "+buyer.getName());
-			   System.out.println("Buyer id : "+buyer.getBuyerId());
-			   status = true;
-	
+			   Buyer buyer;
+			try {
+				buyer = bd.loginBuyer(email, password);
+				   System.out.println("Welcome "+buyer.getName());
+				   System.out.println("Buyer id : "+buyer.getBuyerId());
+				   status = true;
+			} catch (BuyerException e) {
+				
+			System.out.println(e.getMessage());
+			}
+
 			   return status;
 	}
 

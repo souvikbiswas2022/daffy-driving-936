@@ -5,13 +5,26 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import com.masai.bean.Admin;
+import com.masai.bean.BidItem;
 import com.masai.bean.Buyer;
 import com.masai.bean.Item;
 import com.masai.bean.Seller;
+import com.masai.exceptions.AdminException;
+import com.masai.exceptions.BuyerException;
+import com.masai.exceptions.ItemException;
+import com.masai.exceptions.SellerException;
 import com.masai.utility.DBUtil;
 import com.mysql.cj.xdevapi.Result;
 
@@ -47,7 +60,7 @@ public class AdminDaoImpl implements AdminDao{
 	}
 
 	@Override
-	public ArrayList<Buyer> getBuyers() {
+	public ArrayList<Buyer> getBuyers() throws  BuyerException{
 	
 		ArrayList<Buyer> buyers = new ArrayList<>();
 		
@@ -69,15 +82,19 @@ public class AdminDaoImpl implements AdminDao{
 		     }
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			throw new BuyerException(e.getMessage());
 			
+		}
+		
+		if(buyers.size() == 0) {
+			throw new BuyerException("No buyers found ...");
 		}
 
 		return buyers;
 	}
 
 	@Override
-	public ArrayList<Seller> getSellers() {
+	public ArrayList<Seller> getSellers() throws SellerException {
 		
 	ArrayList<Seller> sellers = new ArrayList<>();
 		
@@ -99,15 +116,20 @@ public class AdminDaoImpl implements AdminDao{
 		     }
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
 			
+			throw new SellerException(e.getMessage());
+
+		}
+		
+		if(sellers.size() == 0) {
+			throw new SellerException("No seller found ...");
 		}
 
 		return sellers;
 	}
 
 	@Override
-	public ArrayList<Item> getAllItems() {
+	public ArrayList<Item> getAllItems()  throws ItemException{
 
       ArrayList<Item>  allItems = new ArrayList<>();
 		
@@ -134,19 +156,24 @@ public class AdminDaoImpl implements AdminDao{
 			    Date soldDate = rs.getDate("solddate");
 			    double soldPrice = rs.getDouble("soldprice");
 			   Date startDate = rs.getDate("startdate");
-			   Date endDate = rs.getDate("enddate");
+			   Time endTime = rs.getTime("endtime");
 			   String auctionStatus = rs.getString("aucStatus");
 			   int buyerId = rs.getInt("bid");
 					
 		
-			   allItems.add(new Item(salerid,itemId,itemName,category,basePrice,quantity,itemStatus,soldDate,soldPrice,startDate,endDate,auctionStatus,buyerId));	
+			   allItems.add(new Item(salerid,itemId,itemName,category,basePrice,quantity,itemStatus,soldDate,soldPrice,startDate,endTime,auctionStatus,buyerId));	
 
 			}
 			
 			
 			
 		}catch(SQLException e) {
-			e.printStackTrace();
+			
+			throw new ItemException(e.getMessage());
+		}
+		
+		if(allItems.size() == 0) {
+			throw new ItemException("No item found ...");
 		}
 		
 
@@ -157,7 +184,7 @@ public class AdminDaoImpl implements AdminDao{
 	}
 
 	@Override
-	public Admin loginAdmin(String email, String password) {
+	public Admin loginAdmin(String email, String password)   throws  AdminException{
 		
 		Admin admin = null;
 		
@@ -181,15 +208,115 @@ public class AdminDaoImpl implements AdminDao{
 		}
 		else {
 			
-			System.out.println(" -> through exception");
+			throw new AdminException(" Invalid email or password ...");
 		}
 			
+		}catch(SQLException e) {
+			throw new AdminException(e.getMessage());
+		}
+
+		return admin;
+	}
+
+	@Override
+	public   void algoBid() {
+	
+		
+		ArrayList<BidItem> bidItems = new ArrayList<>();
+		
+		try(Connection connection  = DBUtil.provideConnection()){
+			
+			PreparedStatement ps = connection.prepareStatement("select * from bidcalculate");
+			
+			ResultSet rs =  ps.executeQuery();
+			
+	
+			
+			while(rs.next()) {
+				
+				int buyerId = rs.getInt("bid");
+				Double bidPrice = rs.getDouble("bidPrice");
+				int itemId = rs.getInt("itemid");
+				
+				bidItems.add(new BidItem(buyerId,bidPrice,itemId));
+				
+			}
+			
+			// exception 
+			   HashSet<Integer> itemIds = new HashSet<>();
+			   
+				Map<Integer,Double>  map = new HashMap();
+		
+			for( BidItem i:bidItems) {
+				
+				itemIds.add(i.getItemId());
+			}
+			
+			
+			map.put(bidItems.get(0).getItemId(),bidItems.get(0).getBidPrice() );
+			
+			
+		for(BidItem b:bidItems) {	
+			
+			if(map.containsKey(b.getItemId())) {
+				
+				if(b.getBidPrice() > map.get(b.getItemId())){
+					
+					map.put(b.getItemId(), b.getBidPrice());
+				}
+				
+			}
+			else {
+				
+				map.put(b.getItemId(), b.getBidPrice());
+				
+			}
+			
+		}
+		
+		
+		
+		for(Map.Entry<Integer, Double> m:map.entrySet()) {
+			
+			
+        PreparedStatement ps2 = connection.prepareStatement("select bid  from bidcalculate where itemid=? and bidprice=?");
+        ps2.setInt(1, m.getKey());
+       ps2.setDouble(2, m.getValue());			
+		ResultSet rs2=  ps2.executeQuery();
+			
+			if(rs2.next()) {
+				int buyerId = rs2.getInt("bid");
+				
+				 PreparedStatement ps3 = connection.prepareStatement("update items set bid=? ,  itemstatus='SOLD' , solddate= curdate() ,soldprice=?    where itemid=? ");
+					ps3.setInt(1,buyerId);
+					ps3.setDouble(2,m.getValue());
+					ps3.setInt(3,m.getKey());
+				
+					int check = ps3.executeUpdate();
+		
+			}
+			else {
+				System.out.println("//Throw error");
+			}
+
+		}
+
+//		System.out.println(map);
+		
+		 PreparedStatement ps4 = connection.prepareStatement("delete from  bidcalculate");
+         ps4.executeUpdate();
+		 
+         
+         
+         
+         
+         
+         
 		}catch(SQLException e) {
 			
 			e.printStackTrace();
 		}
-
-		return admin;
+	
 	}
 
 	}
